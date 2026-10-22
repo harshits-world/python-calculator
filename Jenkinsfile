@@ -18,11 +18,13 @@ pipeline {
 
 
 
-        stage('Check Python') {
+        stage('Build') {
 
             steps {
 
                 sh 'python3 --version'
+
+                sh 'python3 -m py_compile calculator.py'
 
             }
 
@@ -30,7 +32,7 @@ pipeline {
 
 
 
-        stage('Run Calculator Tests') {
+        stage('Test') {
 
             steps {
 
@@ -42,13 +44,33 @@ pipeline {
 
 
 
-        stage('Calculator Smoke Test') {
+        stage('Smoke Test') {
 
             steps {
 
-                sh 'echo "Testing calculator multiplication"'
+                sh 'python3 -c "assert 21 * 45 == 945; print(\'Multiplication test passed\')"'
 
-                sh 'python3 -c "assert 21 * 45 == 945; print(\\\"Multiplication test passed\\\")"'
+            }
+
+        }
+
+
+
+        stage('Deploy') {
+
+            steps {
+
+                sh '''
+
+                    mkdir -p "$WORKSPACE/deploy"
+
+                    cp calculator.py "$WORKSPACE/deploy/"
+
+                    echo "Deployment successful"
+
+                    ls -l "$WORKSPACE/deploy/"
+
+                '''
 
             }
 
@@ -62,13 +84,13 @@ pipeline {
 
         success {
 
-            echo 'SUCCESS: Calculator build and tests completed!'
+            echo 'SUCCESS: Build, tests, and deployment completed!'
 
         }
 
         failure {
 
-            echo 'FAILURE: Check the console output for errors.'
+            echo 'FAILURE: Check the console output.'
 
         }
 
