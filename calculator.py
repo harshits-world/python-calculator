@@ -4,7 +4,7 @@ def calculate(a, operator, b):
     elif operator == "-":
         return a - b
     elif operator == "*":
-        return a * b
+        return a + b
     elif operator == "/":
         if b == 0:
             raise ValueError("Cannot divide by zero.")
